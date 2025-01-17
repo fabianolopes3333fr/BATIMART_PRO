@@ -3,6 +3,36 @@
 {% block title %}Accueil - BatiMart Pro{% endblock %}
 
 {% block content %}
-<h1>Bienvenue sur BatiMart Pro</h1>
-<p>Votre plateforme pour les entreprises de peinture et de construction.</p>
+<section class="hero">
+    <h1>Bienvenue sur BatiMart Pro</h1>
+    <p>Votre plateforme pour les entreprises de peinture et de construction.</p>
+    <a href="{% url 'contact' %}" class="btn">Contactez-nous</a>
+</section>
+
+<section class="features">
+    <h2>Nos Services</h2>
+    <div class="feature-grid">
+        <div class="feature">
+            <i class="fas fa-paint-roller"></i>
+            <h3>Peinture</h3>
+            <p>Services de peinture professionnels pour tous vos projets.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-hard-hat"></i>
+            <h3>Construction</h3>
+            <p>Solutions de construction complètes pour vos besoins.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-tools"></i>
+            <h3>Rénovation</h3>
+            <p>Transformez votre espace avec nos services de rénovation.</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <h2>Prêt à commencer votre projet ?</h2>
+    <p>Contactez-nous dès aujourd'hui pour une consultation gratuite.</p>
+    <a href="{% url 'contact' %}" class="btn">Obtenir un devis</a>
+</section>
 {% endblock %}

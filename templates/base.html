@@ -6,28 +6,58 @@
     <title>{% block title %}BatiMart Pro{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="{% url 'home' %}">Accueil</a></li>
-                <li><a href="{% url 'about' %}">À propos</a></li>
-                <li><a href="{% url 'services' %}">Services</a></li>
-                <li><a href="{% url 'projects' %}">Projets</a></li>
-                <li><a href="{% url 'testimonials' %}">Témoignages</a></li>
-                <li><a href="{% url 'contact' %}">Contact</a></li>
-            </ul>
-        </nav>
+        <div class="container">
+            <a href="{% url 'home' %}" class="logo">BatiMart Pro</a>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Accueil</a></li>
+                    <li><a href="{% url 'about' %}">À propos</a></li>
+                    <li><a href="{% url 'services' %}">Services</a></li>
+                    <li><a href="{% url 'projects' %}">Projets</a></li>
+                    <li><a href="{% url 'testimonials' %}">Témoignages</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
     <main>
-        {% block content %}
-        {% endblock %}
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
     </main>
 
     <footer>
-        <p>&copy; 2024 BatiMart Pro. Tous droits réservés.</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>À propos de BatiMart Pro</h3>
+                    <p>Votre partenaire de confiance pour tous vos projets de peinture et de construction.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Liens rapides</h3>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Accueil</a></li>
+                        <li><a href="{% url 'services' %}">Services</a></li>
+                        <li><a href="{% url 'projects' %}">Projets</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contactez-nous</h3>
+                    <p>Email: info@batimartpro.com</p>
+                    <p>Téléphone: +33 1 23 45 67 89</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BatiMart Pro. Tous droits réservés.</p>
+            </div>
+        </div>
     </footer>
 
     <script src="{% static 'js/main.js' %}"></script>
