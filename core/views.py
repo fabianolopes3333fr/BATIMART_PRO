@@ -91,5 +91,31 @@ def projects(request):
     return render(request, 'core/projects.html', {'projects': projects_list})
 
 def testimonials(request):
-    return render(request, 'core/testimonials.html')
+    testimonials_list = [
+        {
+            'name': 'Sophie Dubois',
+            'role': 'Propriétaire de maison',
+            'content': 'BatiMart Pro a complètement transformé notre maison. Leur équipe est professionnelle et attentive aux détails. Je les recommande vivement !',
+            'image': 'testimonial-1.jpg'
+        },
+        {
+            'name': 'Marc Leroy',
+            'role': 'Gérant d\'entreprise',
+            'content': 'Nous avons fait appel à BatiMart Pro pour la rénovation de nos bureaux. Le résultat est au-delà de nos attentes. Un travail remarquable !',
+            'image': 'testimonial-2.jpg'
+        },
+        {
+            'name': 'Émilie Moreau',
+            'role': 'Architecte d\'intérieur',
+            'content': 'En tant que professionnelle, je suis impressionnée par la qualité du travail de BatiMart Pro. Leur expertise technique est inégalée.',
+            'image': 'testimonial-3.jpg'
+        },
+        {
+            'name': 'Thomas Petit',
+            'role': 'Promoteur immobilier',
+            'content': 'BatiMart Pro est notre partenaire de confiance pour tous nos projets. Leur fiabilité et leur savoir-faire sont des atouts précieux.',
+            'image': 'testimonial-4.jpg'
+        }
+    ]
+    return render(request, 'core/testimonials.html', {'testimonials': testimonials_list})
 

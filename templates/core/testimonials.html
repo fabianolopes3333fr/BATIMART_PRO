@@ -1,8 +1,30 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Témoignages - BatiMart Pro{% endblock %}
 
 {% block content %}
-<h1>Témoignages Clients</h1>
-<p>Découvrez ce que nos clients disent de nous.</p>
+<section class="testimonials-hero">
+    <h1>Témoignages</h1>
+    <p>Découvrez ce que nos clients disent de nous</p>
+</section>
+
+<section class="testimonials-grid">
+    {% for testimonial in testimonials %}
+    <div class="testimonial-card">
+        <img src="{% static 'images/'|add:testimonial.image %}" alt="{{ testimonial.name }}">
+        <div class="testimonial-content">
+            <p>"{{ testimonial.content }}"</p>
+            <h3>{{ testimonial.name }}</h3>
+            <p class="testimonial-role">{{ testimonial.role }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+<section class="cta-testimonials">
+    <h2>Prêt à vivre votre propre expérience BatiMart Pro ?</h2>
+    <p>Contactez-nous dès aujourd'hui pour discuter de votre projet.</p>
+    <a href="{% url 'contact' %}" class="btn">Nous contacter</a>
+</section>
 {% endblock %}
