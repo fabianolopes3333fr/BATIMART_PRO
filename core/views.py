@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.contrib import messages
 
 def home(request):
     return render(request, 'core/home.html')
@@ -12,7 +14,25 @@ def about(request):
     return render(request, 'core/about.html', {'team_members': team_members})
 
 def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+
+        # Enviar e-mail
+        send_mail(
+            f'Nouveau message de {name}: {subject}',
+            message,
+            email,
+            ['votre-email@batimart.com'],  # Substitua pelo e-mail de destino
+            fail_silently=False,
+        )
+
+        messages.success(request, 'Votre message a été envoyé avec succès!')
+        return redirect('contact')
     return render(request, 'core/contact.html')
+
 
 def services(request):
     services_list = [

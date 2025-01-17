@@ -21,12 +21,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2!t!gf&y@y%=1n=e**5k6q50!fws2mnm+04d@dt$38hij@r9rh'
 
+SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = []
+if not DEBUG:
+	SECURE_SSL_REDIRECT = True
+	ADMINS = [(config('SUPER_USER'), config('EMAIL'))]
+	SESSION_COOKIE_SECURE = True
+	CSRF_COOKIE_SECURE = True 
+ 
+ 
+ALLOWED_HOSTS = [ 
+		'localhost', 
+		'127.0.0.1',  
+]
 
 
 # Application definition
@@ -83,6 +93,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        #'NAME': config('NAME_DB'),
+        #'USER':config('USER_DB'),
+        #'PASSWORD': config('PASSWORD_DB'),
+        #'HOST':config('HOST_DB'),
+        #'PORT':config('PORT_DB'), 
     }
 }
 
@@ -132,3 +147,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Adicione estas configurações no final do arquivo settings.py
+
+# Configurações de e-mail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') 
+EMAIL_PORT = config('EMAIL_PORT') 
+EMAIL_USE_TLS = config('EMAIL_USE_TLS') 
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
