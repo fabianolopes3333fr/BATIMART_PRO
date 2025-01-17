@@ -3,6 +3,50 @@
 {% block title %}À propos - BatiMart Pro{% endblock %}
 
 {% block content %}
-<h1>À propos de BatiMart Pro</h1>
-<p>Découvrez notre histoire et notre mission.</p>
+<section class="about-hero">
+    <h1>À propos de BatiMart Pro</h1>
+    <p>Votre partenaire de confiance dans le domaine de la peinture et de la construction</p>
+</section>
+
+<section class="about-content">
+    <div class="about-text">
+        <h2>Notre Histoire</h2>
+        <p>Fondée en 2010, BatiMart Pro est née de la passion pour l'excellence dans le domaine de la construction et de la peinture. Depuis plus d'une décennie, nous nous efforçons de fournir des services de qualité supérieure à nos clients.</p>
+
+        <h2>Notre Mission</h2>
+        <p>Chez BatiMart Pro, notre mission est de transformer les espaces de vie et de travail de nos clients en leur offrant des solutions de construction et de peinture innovantes, durables et esthétiques.</p>
+
+        <h2>Nos Valeurs</h2>
+        <ul>
+            <li>Qualité : Nous nous engageons à fournir un travail de la plus haute qualité.</li>
+            <li>Intégrité : Nous agissons avec honnêteté et transparence dans toutes nos interactions.</li>
+            <li>Innovation : Nous adoptons les dernières technologies et techniques pour rester à la pointe de l'industrie.</li>
+            <li>Satisfaction du client : La satisfaction de nos clients est notre priorité absolue.</li>
+        </ul>
+    </div>
+    <div class="about-image">
+        <img src="{% static 'images/about-image.jpg' %}" alt="L'équipe BatiMart Pro au travail">
+    </div>
+</section>
+
+<section class="team">
+    <h2>Notre Équipe</h2>
+    <div class="team-grid">
+        <div class="team-member">
+            <img src="{% static 'images/team-member-1.jpg' %}" alt="Membre de l'équipe 1">
+            <h3>Jean Dupont</h3>
+            <p>Fondateur & PDG</p>
+        </div>
+        <div class="team-member">
+            <img src="{% static 'images/team-member-2.jpg' %}" alt="Membre de l'équipe 2">
+            <h3>Marie Martin</h3>
+            <p>Directrice des Opérations</p>
+        </div>
+        <div class="team-member">
+            <img src="{% static 'images/team-member-3.jpg' %}" alt="Membre de l'équipe 3">
+            <h3>Pierre Lefebvre</h3>
+            <p>Chef de Projet Senior</p>
+        </div>
+    </div>
+</section>
 {% endblock %}
