@@ -17,3 +17,4 @@ def projects(request):
 
 def testimonials(request):
     return render(request, 'core/testimonials.html')
+
