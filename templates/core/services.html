@@ -1,8 +1,27 @@
 {% extends 'base.html' %}
 
-{% block title %}Services - BatiMart Pro{% endblock %}
+{% block title %}Nos Services - BatiMart Pro{% endblock %}
 
 {% block content %}
-<h1>Nos Services</h1>
-<p>Découvrez notre gamme complète de services pour la peinture et la construction.</p>
+<section class="services-hero">
+    <h1>Nos Services</h1>
+    <p>Découvrez notre gamme complète de services professionnels</p>
+</section>
+
+<section class="services-grid">
+    {% for service in services %}
+    <div class="service-card">
+        <i class="{{ service.icon }}"></i>
+        <h3>{{ service.name }}</h3>
+        <p>{{ service.description }}</p>
+        <a href="#" class="btn-service">En savoir plus</a>
+    </div>
+    {% endfor %}
+</section>
+
+<section class="cta-services">
+    <h2>Besoin d'un service sur mesure ?</h2>
+    <p>Contactez-nous pour discuter de vos besoins spécifiques.</p>
+    <a href="{% url 'contact' %}" class="btn">Nous contacter</a>
+</section>
 {% endblock %}

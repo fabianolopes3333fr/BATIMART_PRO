@@ -177,3 +177,80 @@
 .team-member p {
     color: #777;
 }
+
+/* Adicione isso ao final do arquivo main.css */
+
+/* Services page styles */
+.services-hero {
+    background: #35424a;
+    color: #ffffff;
+    text-align: center;
+    padding: 80px 0;
+}
+
+.services-hero h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 50px 0;
+}
+
+.service-card {
+    background: #f4f4f4;
+    border-radius: 5px;
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.service-card i {
+    font-size: 3em;
+    color: #e8491d;
+    margin-bottom: 20px;
+}
+
+.service-card h3 {
+    margin-bottom: 15px;
+    color: #35424a;
+}
+
+.btn-service {
+    display: inline-block;
+    background: #e8491d;
+    color: #ffffff;
+    padding: 10px 20px;
+    margin-top: 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.btn-service:hover {
+    background: #d13d0f;
+}
+
+.cta-services {
+    background: #35424a;
+    color: #ffffff;
+    text-align: center;
+    padding: 50px 0;
+    margin-top: 50px;
+}
+
+.cta-services h2 {
+    margin-bottom: 20px;
+}
+
+.cta-services p {
+    margin-bottom: 30px;
+}
