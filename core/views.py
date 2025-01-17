@@ -50,7 +50,45 @@ def services(request):
     return render(request, 'core/services.html', {'services': services_list})
 
 def projects(request):
-    return render(request, 'core/projects.html')
+    projects_list = [
+        {
+            'title': 'Rénovation d\'appartement',
+            'description': 'Rénovation complète d\'un appartement de 100m² à Paris.',
+            'image': 'project-1.jpg',
+            'category': 'Rénovation'
+        },
+        {
+            'title': 'Peinture extérieure de villa',
+            'description': 'Rafraîchissement de la façade d\'une villa de luxe à Cannes.',
+            'image': 'project-2.jpg',
+            'category': 'Peinture extérieure'
+        },
+        {
+            'title': 'Construction de maison moderne',
+            'description': 'Construction d\'une maison contemporaine de 150m² à Lyon.',
+            'image': 'project-3.jpg',
+            'category': 'Construction'
+        },
+        {
+            'title': 'Décoration intérieure de bureau',
+            'description': 'Relooking complet des bureaux d\'une start-up à Bordeaux.',
+            'image': 'project-4.jpg',
+            'category': 'Décoration'
+        },
+        {
+            'title': 'Peinture industrielle',
+            'description': 'Peinture de grande envergure pour un entrepôt à Marseille.',
+            'image': 'project-5.jpg',
+            'category': 'Peinture industrielle'
+        },
+        {
+            'title': 'Rénovation de façade historique',
+            'description': 'Restauration de la façade d\'un bâtiment historique à Strasbourg.',
+            'image': 'project-6.jpg',
+            'category': 'Restauration'
+        }
+    ]
+    return render(request, 'core/projects.html', {'projects': projects_list})
 
 def testimonials(request):
     return render(request, 'core/testimonials.html')
