@@ -1,9 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from batimart_pro import settings
 
 class Client(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True)
     is_active = models.BooleanField(default=True)

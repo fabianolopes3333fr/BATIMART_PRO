@@ -71,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'requestlogs.middleware.RequestLogsMiddleware',
+    'accounts.middleware.SessionTimeoutMiddleware',
 ]
 
 REST_FRAMEWORK={ 
@@ -110,7 +111,7 @@ REQUESTLOGS = {
     'SECRETS': ['password', 'token'],
     'METHODS': ('PUT', 'PATCH', 'POST', 'DELETE'),
 }
-
+AUTH_USER_MODEL = 'accounts.CustomUser'
 ROOT_URLCONF = 'batimart_pro.urls'
 
 TEMPLATES = [
@@ -134,6 +135,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'batimart_pro.wsgi.application'
 
+# Adicione estas linhas ao final do arquivo settings.py
+
+# Configuração de timeout da sessão (em segundos)
+SESSION_COOKIE_AGE = 3600  # 1 hora
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

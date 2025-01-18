@@ -37,41 +37,47 @@ def render_page(request, client_slug, page_slug=None):
         'theme': theme,
     }
     
-    return render(request, 'core/page.html', context)
+    return render(request, 'page.html', context)
+
 
 def home(request, client_slug=None):
+    context = {}
     if client_slug:
         client = get_object_or_404(Client, slug=client_slug)
-        return render(request, 'core/home.html', {'client': client})
-    return render(request, 'core/home.html')
-
+        context['client'] = client
+    
+    # Verifique se o usuário foi redirecionado devido a inatividade
+    if request.GET.get('session_expired'):
+        context['session_expired'] = True
+    
+    return render(request, 'home.html', context)
 
 def page(request, page_slug, client_slug=None):
     return render_page(request, client_slug, page_slug)
 
 def services(request):
     # Lógica para a view de serviços
-    return render(request, 'core/services.html')
+    return render(request, 'services.html')
 
 def projects(request):
     # Lógica para a view de projetos
-    return render(request, 'core/projects.html')
+    return render(request, 'projects.html')
 
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('core:contact_success')
+            return redirect('contact_success')
     else:
         form = ContactForm()
-    return render(request, 'core/contact.html', {'form': form})
+    return render(request, 'contact.html', {'form': form})
 
 def contact_success(request):
-    return render(request, 'core/contact_success.html')
+    return render(request, 'contact_success.html')
 
 def about(request):
-    return render(request, 'core/about.html')
+    return render(request, 'about.html')
 
 def testimonials(request, client_slug=None):
     client = get_object_or_404(Client, slug=client_slug, is_active=True)
@@ -86,4 +92,4 @@ def testimonials(request, client_slug=None):
         'theme': theme,
     }
 
-    return render(request, 'core/testimonials.html')
+    return render(request, 'testimonials.html')
