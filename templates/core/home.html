@@ -3,36 +3,40 @@
 {% block title %}Accueil - BatiMart Pro{% endblock %}
 
 {% block content %}
-<section class="hero">
-    <h1>Bienvenue sur BatiMart Pro</h1>
-    <p>Votre plateforme pour les entreprises de peinture et de construction.</p>
-    <a href="{% url 'contact' %}" class="btn">Contactez-nous</a>
-</section>
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="display-4 mb-4">Bienvenue chez BatiMart Pro</h1>
+        <p class="lead">Votre partenaire de confiance pour tous vos projets de peinture et de construction.</p>
+    </div>
+</div>
 
-<section class="features">
-    <h2>Nos Services</h2>
-    <div class="feature-grid">
-        <div class="feature">
-            <i class="fas fa-paint-roller"></i>
-            <h3>Peinture</h3>
-            <p>Services de peinture professionnels pour tous vos projets.</p>
-        </div>
-        <div class="feature">
-            <i class="fas fa-hard-hat"></i>
-            <h3>Construction</h3>
-            <p>Solutions de construction complètes pour vos besoins.</p>
-        </div>
-        <div class="feature">
-            <i class="fas fa-tools"></i>
-            <h3>Rénovation</h3>
-            <p>Transformez votre espace avec nos services de rénovation.</p>
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Nos Services</h5>
+                <p class="card-text">Découvrez notre gamme complète de services de peinture et de construction.</p>
+                <a href="{% url 'services' %}" class="btn btn-primary">En savoir plus</a>
+            </div>
         </div>
     </div>
-</section>
-
-<section class="cta">
-    <h2>Prêt à commencer votre projet ?</h2>
-    <p>Contactez-nous dès aujourd'hui pour une consultation gratuite.</p>
-    <a href="{% url 'contact' %}" class="btn">Obtenir un devis</a>
-</section>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Nos Projets</h5>
+                <p class="card-text">Explorez nos réalisations et laissez-vous inspirer pour votre prochain projet.</p>
+                <a href="{% url 'projects' %}" class="btn btn-primary">Voir les projets</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Contactez-nous</h5>
+                <p class="card-text">Prêt à démarrer votre projet ? Contactez-nous pour un devis gratuit.</p>
+                <a href="{% url 'contact' %}" class="btn btn-primary">Nous contacter</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

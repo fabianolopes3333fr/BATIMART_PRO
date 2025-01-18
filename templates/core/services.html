@@ -3,25 +3,70 @@
 {% block title %}Nos Services - BatiMart Pro{% endblock %}
 
 {% block content %}
-<section class="services-hero">
-    <h1>Nos Services</h1>
-    <p>Découvrez notre gamme complète de services professionnels</p>
-</section>
-
-<section class="services-grid">
-    {% for service in services %}
-    <div class="service-card">
-        <i class="{{ service.icon }}"></i>
-        <h3>{{ service.name }}</h3>
-        <p>{{ service.description }}</p>
-        <a href="#" class="btn-service">En savoir plus</a>
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="display-4 mb-4">Nos Services</h1>
+        <p class="lead">Découvrez notre gamme complète de services de peinture et de construction.</p>
     </div>
-    {% endfor %}
-</section>
+</div>
 
-<section class="cta-services">
-    <h2>Besoin d'un service sur mesure ?</h2>
-    <p>Contactez-nous pour discuter de vos besoins spécifiques.</p>
-    <a href="{% url 'contact' %}" class="btn">Nous contacter</a>
-</section>
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Peinture Intérieure</h5>
+                <p class="card-text">Transformez vos espaces intérieurs avec nos services de peinture professionnels.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Peinture Extérieure</h5>
+                <p class="card-text">Protégez et embellissez l'extérieur de votre propriété avec notre expertise.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Rénovation</h5>
+                <p class="card-text">Des services complets de rénovation pour moderniser votre espace de vie ou de travail.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Construction Neuve</h5>
+                <p class="card-text">Réalisez vos projets de construction neuve avec notre équipe expérimentée.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Conseil en Décoration</h5>
+                <p class="card-text">Bénéficiez de l'expertise de nos décorateurs pour créer l'ambiance parfaite.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Maintenance</h5>
+                <p class="card-text">Des services de maintenance régulière pour préserver la beauté de votre propriété.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12 text-center">
+        <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">Demander un devis</a>
+    </div>
+</div>
 {% endblock %}

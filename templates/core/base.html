@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} - {{ client.company_name }}</title>
+    <meta name="description" content="{{ page.meta_description }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: {
+                    {
+                    client.primary_color
+                }
+            }
+
+            ;
+
+            --secondary-color: {
+                    {
+                    client.secondary_color
+                }
+            }
+
+            ;
+
+            --font-family: {
+                    {
+                    client.font_family
+                }
+            }
+
+            ;
+        }
+
+        body {
+            font-family: var(--font-family);
+        }
+
+        /* Add more base styles here */
+    </style>
+    <style>
+        {
+                {
+                theme.css|safe
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                {% for item in menu_items %}
+                <li>
+                    <a href="{{ item.url }}">{{ item.name }}</a>
+                    {% if item.children.exists %}
+                    <ul>
+                        {% for child in item.children.all %}
+                        <li><a href="{{ child.url }}">{{ child.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ client.company_name }} {% now "Y" %}</p>
+    </footer>
+
+    <script>
+        // Add any common JavaScript here
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

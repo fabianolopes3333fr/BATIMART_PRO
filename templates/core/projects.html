@@ -1,31 +1,33 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block title %}Nos Projets - BatiMart Pro{% endblock %}
 
 {% block content %}
-<section class="projects-hero">
-    <h1>Nos Projets</h1>
-    <p>Découvrez quelques-unes de nos réalisations récentes</p>
-</section>
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="display-4 mb-4">Nos Projets</h1>
+        <p class="lead">Découvrez quelques-unes de nos réalisations récentes.</p>
+    </div>
+</div>
 
-<section class="projects-grid">
+<div class="row mt-5">
     {% for project in projects %}
-    <div class="project-card">
-        <img src="{% static 'images/'|add:project.image %}" alt="{{ project.title }}">
-        <div class="project-info">
-            <h3>{{ project.title }}</h3>
-            <p class="project-category">{{ project.category }}</p>
-            <p>{{ project.description }}</p>
-            <a href="#" class="btn-project">Voir les détails</a>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ project.title }}</h5>
+                <p class="card-text">{{ project.description }}</p>
+                <a href="{% url 'project_detail' project.id %}" class="btn btn-primary">Voir les détails</a>
+            </div>
         </div>
     </div>
     {% endfor %}
-</section>
+</div>
 
-<section class="cta-projects">
-    <h2>Vous avez un projet en tête ?</h2>
-    <p>Contactez-nous pour discuter de votre prochain projet de construction ou de rénovation.</p>
-    <a href="{% url 'contact' %}" class="btn">Demander un devis</a>
-</section>
+<div class="row mt-5">
+    <div class="col-12 text-center">
+        <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">Démarrer votre projet</a>
+    </div>
+</div>
 {% endblock %}
