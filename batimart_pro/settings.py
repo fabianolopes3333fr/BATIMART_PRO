@@ -13,13 +13,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import sys
+from dotenv import load_dotenv 
 from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+#BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 STATIC_DIR=os.path.join(BASE_DIR,'static') 
-
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -32,11 +34,10 @@ DEBUG = config('DEBUG')
 
 if not DEBUG:
 	SECURE_SSL_REDIRECT = True
-	ADMINS = [(config('SUPER_USER'), config('EMAIL'))]
+	ADMINS = [(os.getenv('SUPER_USER'), os.getenv('EMAIL'))]
 	SESSION_COOKIE_SECURE = True
 	CSRF_COOKIE_SECURE = True 
- 
- 
+
 ALLOWED_HOSTS = [ 
 		'localhost', 
 		'127.0.0.1',  
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'base',
     'core',
     'accounts',
     'ecommerce',
@@ -68,7 +70,46 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'requestlogs.middleware.RequestLogsMiddleware',
 ]
+
+REST_FRAMEWORK={ 
+    'EXCEPTION_HANDLER': 'requestlogs.views.exception_handler',
+}
+
+# Configuração padrão de Logs 
+LOGGING = { # update 03/11/2024 
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'requestlogs_to_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'info.log',
+            'when': 'midnight',  # Rotaciona a cada meia-noite
+            'backupCount': 7,  # Mantém logs dos últimos 7 dias
+            'formatter': 'verbose',  # Configuração de formatação
+        },
+    },
+    'loggers': {
+        'requestlogs': {
+            'handlers': ['requestlogs_to_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        },
+    },
+}
+
+REQUESTLOGS = {
+    'SECRETS': ['password', 'token'],
+    'METHODS': ('PUT', 'PATCH', 'POST', 'DELETE'),
+}
 
 ROOT_URLCONF = 'batimart_pro.urls'
 
@@ -76,7 +117,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            TEMPLATE_DIR,
+            TEMPLATE_DIR
         ],  # Adicione esta linha
         'APP_DIRS': True,
         'OPTIONS': {
@@ -100,7 +141,7 @@ WSGI_APPLICATION = 'batimart_pro.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME':os.path.join(BASE_DIR, 'db.sqlite3'),
         #'NAME': config('NAME_DB'),
         #'USER':config('USER_DB'),
         #'PASSWORD': config('PASSWORD_DB'),

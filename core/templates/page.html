@@ -1,10 +1,9 @@
-{% extends "core/base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 <h1>{{ page.title }}</h1>
 {% for section in sections %}
-<section id="section-{{ section.id }}" class="section-{{ section.section_type }}" style="{% if section.background_color %}background-color: {{ section.background_color }};{% endif %}
-                        {% if section.background_image %}background-image: url({{ section.background_image.url }});{% endif %}">
+<section id="section-{{ section.id }}" class="section-{{ section.section_type }}" style="{% if section.background_image %}background-image: url({{ section.background_image.url }});{% endif %}">
     <h2>{{ section.title }}</h2>
     {% if section.section_type == 'text' %}
     {{ section.content|safe }}

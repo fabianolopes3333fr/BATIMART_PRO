@@ -44,29 +44,29 @@
         <header>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container">
-                    <a class="navbar-brand" href="{% url 'home' %}">BatiMart Pro</a>
+                    <a class="navbar-brand" href="{% url 'core:home' %}">BatiMart Pro</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'core:home' %}">Accueil</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">À propos</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'core:about' %}">À propos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}" href="{% url 'services' %}">Services</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}" href="{% url 'core:services' %}">Services</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}" href="{% url 'projects' %}">Projets</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}" href="{% url 'core:projects' %}">Projets</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'testimonials' %}active{% endif %}" href="{% url 'testimonials' %}">Témoignages</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'testimonials' %}active{% endif %}" href="{% url 'core:testimonials' %}">Témoignages</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+                                <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'core:contact' %}">Contact</a>
                             </li>
                         </ul>
                     </div>
@@ -89,10 +89,10 @@
                     <div class="col-md-4 mb-3">
                         <h3>Liens rapides</h3>
                         <ul class="list-unstyled">
-                            <li><a href="{% url 'home' %}">Accueil</a></li>
-                            <li><a href="{% url 'services' %}">Services</a></li>
-                            <li><a href="{% url 'projects' %}">Projets</a></li>
-                            <li><a href="{% url 'contact' %}">Contact</a></li>
+                            <li><a href="{% url 'core:home' %}">Accueil</a></li>
+                            <li><a href="{% url 'core:services' %}">Services</a></li>
+                            <li><a href="{% url 'core:projects' %}">Projets</a></li>
+                            <li><a href="{% url 'core:contact' %}">Contact</a></li>
                         </ul>
                     </div>
                     <div class="col-md-4 mb-3">
