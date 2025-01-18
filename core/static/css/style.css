@@ -1,0 +1,45 @@
+/* Adicione isso ao seu arquivo CSS existente */
+
+.main-nav {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    /* Ajuste conforme necessário */
+    width: 300px;
+    /* Ajuste conforme necessário */
+    height: 100vh;
+    background-color: #f8f8f8;
+    /* Ajuste a cor conforme necessário */
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.menu-transition .main-nav {
+    transition: transform 0.3s ease-in-out;
+}
+
+.main-nav.active {
+    transform: translateX(-300px);
+    /* Deve ser o mesmo valor negativo da largura */
+}
+
+.menu-toggle {
+    z-index: 1001;
+    /* Adicione estilos para o botão do menu aqui */
+}
+
+body.menu-open {
+    overflow: hidden;
+}
+
+/* Estilo para o overlay quando o menu está aberto */
+body.menu-open::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}

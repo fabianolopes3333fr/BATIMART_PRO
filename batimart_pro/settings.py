@@ -17,6 +17,9 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
+STATIC_DIR=os.path.join(BASE_DIR,'static') 
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -71,7 +74,9 @@ ROOT_URLCONF = 'batimart_pro.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Adicione esta linha
+        'DIRS': [
+            TEMPLATE_DIR,
+        ],  # Adicione esta linha
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -147,10 +152,6 @@ STATIC_URL = '/static/'
 
 # Configurações para testes
 # Configurações para testes
-if 'test' in sys.argv:
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-    COMPRESS_ENABLED = False
-    COMPRESS_PRECOMPILERS = ()
     
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'

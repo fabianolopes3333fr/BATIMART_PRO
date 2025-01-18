@@ -1,11 +1,10 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="fr-FR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Votre partenaire de confiance dans le domaine de la peinture et de la construction">
     <meta name="keywords" content="batimart, peinture, construction, partenaire, confiance">
     <meta name="author" content="Your Name">
@@ -42,22 +41,27 @@
 </head>
 
 <body>
-    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
-    <header>
-        <div class="container">
-            <a href="{% url 'home' %}" class="logo">BatiMart Pro</a>
-            <nav aria-label="Navigation principale">
-                <ul>
-                    <li><a href="{% url 'home' %}">Accueil</a></li>
-                    <li><a href="{% url 'about' %}">À propos</a></li>
-                    <li><a href="{% url 'services' %}">Services</a></li>
-                    <li><a href="{% url 'projects' %}">Projets</a></li>
-                    <li><a href="{% url 'testimonials' %}">Témoignages</a></li>
-                    <li><a href="{% url 'contact' %}">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <body>
+        <header>
+            <div class="container">
+                <a href="{% url 'home' %}" class="logo">BatiMart Pro</a>
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav aria-label="Navigation principale" class="main-nav">
+                    <ul>
+                        <li><a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Accueil</a></li>
+                        <li><a href="{% url 'about' %}" {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>À propos</a></li>
+                        <li><a href="{% url 'services' %}" {% if request.resolver_match.url_name == 'services' %}class="active"{% endif %}>Services</a></li>
+                        <li><a href="{% url 'projects' %}" {% if request.resolver_match.url_name == 'projects' %}class="active"{% endif %}>Projets</a></li>
+                        <li><a href="{% url 'testimonials' %}" {% if request.resolver_match.url_name == 'testimonials' %}class="active"{% endif %}>Témoignages</a></li>
+                        <li><a href="{% url 'contact' %}" {% if request.resolver_match.url_name == 'contact' %}class="active"{% endif %}>Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
 
     <main id="main-content">
         <div class="container">
@@ -93,21 +97,8 @@
             </div>
         </div>
     </footer>
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
 
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "BatiMart Pro",
-  "url": "https://www.batimartpro.com",
-  "logo": "https://www.batimartpro.com{% static 'images/logo.png' %}",
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "+33 1 23 45 67 89",
-    "contactType": "customer service"
-  }
-}
-</script>
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 

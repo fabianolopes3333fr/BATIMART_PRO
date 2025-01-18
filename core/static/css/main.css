@@ -1,4 +1,6 @@
 /* Reset e estilos gerais */
+@import url('./style.css');
+
 * {
     margin: 0;
     padding: 0;
