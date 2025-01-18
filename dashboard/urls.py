@@ -1,5 +1,6 @@
 from django.urls import path
+from . import views
 
 urlpatterns = [
-    # Adicione suas URLs do aplicativo accounts aqui
+    path('', views.dashboard, name='dashboard'),
 ]
