@@ -1,6 +1,6 @@
 # accounts/forms.py
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.utils.translation import gettext_lazy as _
 from .models import User
 
@@ -46,6 +46,25 @@ class UserProfileUpdateForm(UserChangeForm):
         widgets = {
             'birth_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
+
+class ChangePasswordForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].widget.attrs.update({'class': 'form-control'})
+        self.fields['new_password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['new_password2'].widget.attrs.update({'class': 'form-control'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password1 = cleaned_data.get('new_password1')
+        new_password2 = cleaned_data.get('new_password2')
+
+        if new_password1 and new_password2:
+            if new_password1 != new_password2:
+                raise forms.ValidationError(_("Les mots de passe ne correspondent pas."))
+
+        return cleaned_data
 
 class PasswordChangeCustomForm(forms.Form):
     old_password = forms.CharField(

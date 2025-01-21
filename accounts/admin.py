@@ -5,14 +5,14 @@ from django.utils.html import format_html
 from django.urls import path
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import CustomUser
+from .models import User
 from django import forms
 import csv
-import datetime
+
 
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
-@admin.register(CustomUser)
+@admin.register(User)
 class CustomUserAdmin(UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_active', 'colored_status')
     list_filter = ('is_staff', 'is_active', 'groups')
@@ -78,7 +78,7 @@ class CustomUserAdmin(UserAdmin):
                 decoded_file = csv_file.read().decode('utf-8').splitlines()
                 reader = csv.DictReader(decoded_file)
                 for row in reader:
-                    CustomUser.objects.create(
+                    User.objects.create(
                         email=row['email'],
                         first_name=row['first_name'],
                         last_name=row['last_name'],

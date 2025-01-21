@@ -1,5 +1,5 @@
 # accounts/views.py
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
@@ -8,9 +8,9 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView, DetailView, ListView
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
-
+from config.mixins import ConfigStaffRequiredMixin, ConfigSuperUserRequiredMixin
 from .models import User
-from .forms import UserRegistrationForm, UserProfileUpdateForm, ChangePasswordForm
+from .forms import UserRegistrationForm, UserProfileUpdateForm,ChangePasswordForm 
 from .decorators import email_verification_required
 
 class SignUpView(CreateView):
@@ -55,42 +55,28 @@ class UserDetailView(DetailView):
     def get_object(self):
         return self.request.user
 
-class AdminUserListView(UserPassesTestMixin, ListView):
+class AdminUserListView(ConfigSuperUserRequiredMixin, ListView):
     model = User
     template_name = 'accounts/user_list.html'
     context_object_name = 'users'
     paginate_by = 20
 
-    def test_func(self):
-        return self.request.user.is_staff
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        return super().dispatch(request, *args, **kwargs)  
 
 @login_required
 def change_password(request):
     if request.method == 'POST':
-        form = ChangePasswordForm(request.POST)
+        form = ChangePasswordForm(user=request.user, data=request.POST)
         if form.is_valid():
-            user = request.user
-            if user.check_password(form.cleaned_data['old_password']):
-                user.set_password(form.cleaned_data['new_password1'])
-                user.save()
-                messages.success(
-                    request,
-                    _('Votre mot de passe a été modifié avec succès.')
-                )
-                return redirect('login')
-            else:
-                messages.error(
-                    request,
-                    _('Le mot de passe actuel est incorrect.')
-                )
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, _('Votre mot de passe a été modifié avec succès.'))
+            return redirect('profile')
     else:
-        form = ChangePasswordForm()
-    
-    return render(
-        request,
-        'accounts/change_password.html',
-        {'form': form}
-    )
+        form = ChangePasswordForm(user=request.user)
+    return render(request, 'accounts/change_password.html', {'form': form})
 
 @login_required
 def verify_email(request, token):

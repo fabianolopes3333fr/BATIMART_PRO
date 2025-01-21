@@ -1,7 +1,7 @@
 # config/forms.py
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from .models import SiteConfig, Menu, MediaLibrary
+from .models import SiteConfig, Menu, BancoImagens,Page,Redirect
 import mimetypes
 
 class SiteConfigForm(forms.ModelForm):
@@ -19,8 +19,11 @@ class SiteConfigForm(forms.ModelForm):
 
     def clean_smtp_port(self):
         port = self.cleaned_data.get('smtp_port')
-        if port < 1 or port > 65535:
-            raise forms.ValidationError(_('Port invalide.'))
+        if port is not None:
+            if port < 1 or port > 65535:
+                raise forms.ValidationError(_('Port invalide.'))
+        else:
+            raise forms.ValidationError(_('Le port SMTP est requis.'))
         return port
 
 class MenuForm(forms.ModelForm):
@@ -43,9 +46,9 @@ class MenuForm(forms.ModelForm):
             )
         return cleaned_data
 
-class MediaLibraryForm(forms.ModelForm):
+class BancoImagensForm(forms.ModelForm):
     class Meta:
-        model = MediaLibrary
+        model = BancoImagens
         fields = ['title', 'file', 'description', 'alt_text']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
@@ -115,8 +118,23 @@ class SEOSettingsForm(forms.ModelForm):
 
     def clean_meta_title(self):
         title = self.cleaned_data.get('meta_title')
-        if len(title) > 60:
+        if title is not None:
+            if len(title) > 60:
+                raise forms.ValidationError(
+                    _('Le titre meta ne doit pas dépasser 60 caractères.')
+                )
+        else:
             raise forms.ValidationError(
-                _('Le titre meta ne doit pas dépasser 60 caractères.')
+                _('Le titre meta est requis.')
             )
         return title
+    
+class PageForm(forms.ModelForm):
+    class Meta:
+        model = Page
+        fields = ['title', 'slug', 'content']
+
+class RedirectForm(forms.ModelForm):
+    class Meta:
+        model = Redirect
+        fields = ['old_path', 'new_path']

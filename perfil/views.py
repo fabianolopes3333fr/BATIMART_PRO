@@ -20,6 +20,13 @@ from .forms import (
 )
 from .mixins import ProfileOwnerRequiredMixin
 
+class ProfileDetailView(ProfileOwnerRequiredMixin, DetailView):
+    model = ClientProfile  # Corrigido
+    template_name = 'profiles/detail.html'
+    
+    def get_object(self):
+        return get_object_or_404(ClientProfile, pk=self.kwargs['pk'])  # Corrigido
+
 class ClientProfileDetailView(LoginRequiredMixin, DetailView):
     model = ClientProfile
     template_name = 'profiles/profile_detail.html'
@@ -30,15 +37,20 @@ class ClientProfileDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        profile = self.get_object()
+        
         context['purchases'] = Purchase.objects.filter(
-            profile=self.object
-        ).order_by('-date_commande')[:5]
+            profile=profile
+        ).order_by('-created_at')[:5]  # Alterado de date_commande para created_at
+        
         context['quotes'] = Quote.objects.filter(
-            profile=self.object
-        ).order_by('-date_creation')[:5]
+            profile=profile
+        ).order_by('-created_at')[:5]  # Alterado de date_creation para created_at
+        
         context['wishlists'] = Wishlist.objects.filter(
-            profile=self.object
-        ).order_by('-date_creation')
+            profile=profile
+        ).order_by('-created_at')  # Alterado de date_creation para created_at
+    
         return context
 
 class ClientProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -66,7 +78,7 @@ class PurchaseListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Purchase.objects.filter(
             profile__user=self.request.user
-        ).order_by('-date_commande')
+        ).order_by('-created_at')  # Alterado de date_commande para created_at
 
 class PurchaseDetailView(ProfileOwnerRequiredMixin, DetailView):
     model = Purchase
@@ -82,7 +94,7 @@ class QuoteListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Quote.objects.filter(
             profile__user=self.request.user
-        ).order_by('-date_creation')
+        ).order_by('-created_at')  # Alterado de date_creation para created_at
 
 class QuoteCreateView(LoginRequiredMixin, CreateView):
     model = Quote
@@ -91,12 +103,25 @@ class QuoteCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('quote-list')
 
     def form_valid(self, form):
-        form.instance.profile = self.request.user.client_profile
+        # Busca o perfil do cliente explicitamente
+        client_profile = get_object_or_404(
+            ClientProfile,
+            user=self.request.user
+        )
+        
+        # Define o perfil no formulário
+        form.instance.profile = client_profile
+        
         messages.success(
             self.request,
             _('Votre devis a été créé avec succès.')
         )
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['initial'] = {'status': 'draft'}  # Status inicial como rascunho
+        return kwargs
 
 class WishlistListView(LoginRequiredMixin, ListView):
     model = Wishlist
@@ -106,7 +131,7 @@ class WishlistListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Wishlist.objects.filter(
             profile__user=self.request.user
-        ).order_by('-date_creation')
+        ).order_by('-created_at')  # Alterado de date_creation para created_at
 
 class WishlistCreateView(LoginRequiredMixin, CreateView):
     model = Wishlist
@@ -115,7 +140,15 @@ class WishlistCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('wishlist-list')
 
     def form_valid(self, form):
-        form.instance.profile = self.request.user.client_profile
+        # Busca o perfil do cliente de forma explícita
+        client_profile = get_object_or_404(
+            ClientProfile,
+            user=self.request.user
+        )
+        
+        # Associa o perfil à lista de desejos
+        form.instance.profile = client_profile
+        
         messages.success(
             self.request,
             _('Votre liste de souhaits a été créée.')
@@ -149,3 +182,4 @@ class NotificationPreferencesView(LoginRequiredMixin, UpdateView):
             _('Vos préférences de notification ont été mises à jour.')
         )
         return super().form_valid(form)
+    

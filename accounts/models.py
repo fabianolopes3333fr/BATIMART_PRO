@@ -63,13 +63,6 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse('accounts:user-detail', kwargs={'pk': self.pk})
 
-    def send_verification_email(self):
-        # Lógica para enviar email de verificação
-        pass
-
-    def verify_email(self, token):
-        # Lógica para verificar email
-        pass
 
     # Métodos específicos
     @property

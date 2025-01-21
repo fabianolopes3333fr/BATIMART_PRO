@@ -14,10 +14,10 @@ from pathlib import Path
 import os
 import sys
 from dotenv import load_dotenv 
-from decouple import config
+from django.utils.translation import gettext_lazy as _
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-#BASE_DIR = Path(__file__).resolve().parent.parent
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 STATIC_DIR=os.path.join(BASE_DIR,'static') 
@@ -28,9 +28,9 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG')
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 if not DEBUG:
 	SECURE_SSL_REDIRECT = True
@@ -38,11 +38,7 @@ if not DEBUG:
 	SESSION_COOKIE_SECURE = True
 	CSRF_COOKIE_SECURE = True 
 
-ALLOWED_HOSTS = [ 
-		'localhost', 
-		'127.0.0.1',  
-]
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Application definition
 
@@ -97,14 +93,14 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default='')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default='')
 
-SOCIAL_AUTH_FACEBOOK_KEY = config('SOCIAL_AUTH_FACEBOOK_KEY', default='')
-SOCIAL_AUTH_FACEBOOK_SECRET = config('SOCIAL_AUTH_FACEBOOK_SECRET', default='')
+SOCIAL_AUTH_FACEBOOK_KEY = os.getenv('SOCIAL_AUTH_FACEBOOK_KEY', default='')
+SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv('SOCIAL_AUTH_FACEBOOK_SECRET', default='')
 
 # Habilitar login social apenas se as chaves estiverem configuradas
-ALLOW_SOCIAL_LOGIN = config('ALLOW_SOCIAL_LOGIN', default=False, cast=bool)
+ALLOW_SOCIAL_LOGIN = os.getenv('ALLOW_SOCIAL_LOGIN', 'False').lower() == 'true'
 SITE_ID = 1
 
 # Configurações do Provider
@@ -207,11 +203,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME':os.path.join(BASE_DIR, 'db.sqlite3'),
-        #'NAME': config('NAME_DB'),
-        #'USER':config('USER_DB'),
-        #'PASSWORD': config('PASSWORD_DB'),
-        #'HOST':config('HOST_DB'),
-        #'PORT':config('PORT_DB'), 
+        #'NAME': os.getenv('NAME_DB'),
+        #'USER':os.getenv('USER_DB'),
+        #'PASSWORD': os.getenv('PASSWORD_DB'),
+        #'HOST':os.getenv('HOST_DB'),
+        #'PORT':os.getenv('PORT_DB'), 
     }
 }
 
@@ -298,12 +294,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configurações de e-mail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') 
-EMAIL_PORT = config('EMAIL_PORT') 
-EMAIL_USE_TLS = config('EMAIL_USE_TLS') 
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') 
+EMAIL_PORT = os.getenv('EMAIL_PORT') 
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') 
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 
