@@ -54,23 +54,32 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'social_django',
     'crispy_forms',
+    'crispy_bootstrap4',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'rest_framework',
+    'modeltranslation',
     'base',
     'core',
     'accounts',
     'ecommerce',
     'services',
     'dashboard',
+    'config',
+    'perfil',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'core.middleware.CustomDomainMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -79,13 +88,23 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
     'requestlogs.middleware.RequestLogsMiddleware',
     'accounts.middleware.SessionTimeoutMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
-AUTHENTICATION_BACKENDS = [
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
+)
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default='')
+
+SOCIAL_AUTH_FACEBOOK_KEY = config('SOCIAL_AUTH_FACEBOOK_KEY', default='')
+SOCIAL_AUTH_FACEBOOK_SECRET = config('SOCIAL_AUTH_FACEBOOK_SECRET', default='')
+
+# Habilitar login social apenas se as chaves estiverem configuradas
+ALLOW_SOCIAL_LOGIN = config('ALLOW_SOCIAL_LOGIN', default=False, cast=bool)
 SITE_ID = 1
 
 # Configurações do Provider
@@ -140,8 +159,16 @@ REQUESTLOGS = {
     'SECRETS': ['password', 'token'],
     'METHODS': ('PUT', 'PATCH', 'POST', 'DELETE'),
 }
-AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = 'accounts.User'
 ROOT_URLCONF = 'batimart_pro.urls'
+
+# URLs de redirecionamento após login/logout
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'  # Redireciona para a home page após o logout
+
+# URL da página de login
+LOGIN_URL = '/accounts/login/'
 
 TEMPLATES = [
     {
@@ -156,6 +183,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'config.context_processors.page_config',
+                'config.context_processors.site_config',
             ],
         },
     },
@@ -209,15 +238,42 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'fr-fr'
-
-TIME_ZONE = 'Europe/Paris'
-
+LANGUAGE_CODE = 'fr'
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
+TIME_ZONE = 'Europe/Paris'
+LANGUAGES = (
+    ('fr', _('Français')),
+    ('en', _('English')),
+    ('pt', _('Português')),
+)
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR,  'locale'),
+]
 
+# Formatos de data e hora para França
+DATE_FORMAT = 'd/m/Y'
+DATETIME_FORMAT = 'd/m/Y H:i'
+SHORT_DATE_FORMAT = 'd/m/Y'
+SHORT_DATETIME_FORMAT = 'd/m/Y H:i'
 
+# Formato de moeda para Euro
+USE_THOUSAND_SEPARATOR = True
+THOUSAND_SEPARATOR = ' '
+NUMBER_GROUPING = 3
+DECIMAL_SEPARATOR = ','
+
+# Configurações adicionais de internacionalização
+LANGUAGES_BIDI = [] # Línguas da direita para esquerda
+LANGUAGE_COOKIE_NAME = 'django_language'
+LANGUAGE_COOKIE_AGE = None
+LANGUAGE_COOKIE_DOMAIN = None
+LANGUAGE_COOKIE_PATH = '/'
+
+# Cache para traduções
+USE_I18N_CACHE = True
+I18N_CACHE_KEY_PREFIX = 'i18n'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -251,4 +307,3 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'

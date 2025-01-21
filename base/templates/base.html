@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -10,22 +9,16 @@
 <body>
     {% include 'partials/navbar.html' %}
     {% include 'partials/session_expired_modal.html' %}
-   
 
     <main id="main-content" class="container mt-4">
         {% block content %}
         {% endblock %}
     </main>
 
-    {% include 'partials/foot.html' %}
-
-   
-
-    
-    
+    {% include 'partials/footer.html' %}
 
     <!-- JS bootstrap, jquery, script-->
-    
+
     {% include 'partials/scripts_footer.html' %}
 </body>
 

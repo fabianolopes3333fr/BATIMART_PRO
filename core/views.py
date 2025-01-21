@@ -41,22 +41,14 @@ def render_page(request, client_slug, page_slug=None):
 
 
 def home(request, client_slug=None):
-    context = {}
-    if client_slug:
-        client = get_object_or_404(Client, slug=client_slug)
-        context['client'] = client
     
-    # Verifique se o usuário foi redirecionado devido a inatividade
-    if request.GET.get('session_expired'):
-        context['session_expired'] = True
-    
-    return render(request, 'home.html', context)
+    return render(request, 'home.html')
 
 def page(request, page_slug, client_slug=None):
     return render_page(request, client_slug, page_slug)
 
-def services(request):
-    # Lógica para a view de serviços
+def services_view(request):
+    # Lógica da view aqui
     return render(request, 'services.html')
 
 def projects(request):
