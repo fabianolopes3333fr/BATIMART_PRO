@@ -1,14 +1,168 @@
+import re
+import uuid
+from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import activate, gettext_lazy as _
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import BaseUserManager, PermissionsMixin, AbstractBaseUser
 
-class User(AbstractUser):
-    # Campos de autenticação extras
-    email = models.EmailField(_('email'), unique=True)
-    is_verified = models.BooleanField(default=False)
+class MyUserManager(BaseUserManager):
+    def create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError(_('Le-mail doit être fourni.'))
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
     
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
+    
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    # Campos de autenticação extras
+    username = models.CharField(max_length=100, unique=True, null=True)
+    email = models.EmailField(_('email'), max_length=225, unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    company_name = models.CharField(
+        _('Nom de l\'entreprise'), max_length=255, blank=True, null=True)
+    # ... resto do modelo ...
+    is_verified = models.BooleanField(default=False)
+    email_verification_token = models.CharField(max_length=100, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    
+    class CivilityChoices(models.TextChoices):
+        MONSIEUR = 'M', _('Monsieur')
+        MADAME = 'MME', _('Madame')
+        MADEMOISELLE = 'MLLE', _('Mademoiselle')
+
+    class UserTypeChoices(models.TextChoices):
+        INDIVIDUAL = 'INDIVIDUAL', _('Particulier')
+        COMPANY = 'COMPANY', _('Entreprise')
+
+    class LanguageChoices(models.TextChoices):
+        FRENCH = 'fr', _('Français')
+        ENGLISH = 'en', _('English')
+        SPANISH = 'es', _('Español')
+        PORTUGUESE_BR = 'pt-br', _('Português Brasil')
+        PORTUGUESE = 'pt', _('Português')
+    
+    civility = models.CharField(
+        _('Civilité'),
+        max_length=4,
+        choices=CivilityChoices.choices,
+        blank=True
+    )
+
+    user_type = models.CharField(
+        _('Type d\'utilisateur'),
+        max_length=10,
+        choices=UserTypeChoices.choices,
+        default=UserTypeChoices.INDIVIDUAL
+    )
+
+    language = models.CharField(
+        max_length=5,
+        choices=LanguageChoices.choices,
+        default=LanguageChoices.FRENCH,
+        verbose_name=_('Langue préférée')
+    )
+
+    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+    
+    objects = MyUserManager()
+    
+    
+    def __str__(self):
+        return self.email
+    
+    def is_company(self):
+        return self.user_type == 'COMPANY'
+
+    def is_individual(self):
+        return self.user_type == 'INDIVIDUAL'
+
+    
+    
+    def send_verification_email(self):
+        if not self.email_verification_token:
+            self.email_verification_token = str(uuid.uuid4())
+            
+        verification_link = f"{settings.SITE_URL}/verify-email/{self.email_verification_token}/"
+        
+        # Ativa o idioma do usuário (supondo que você tenha um campo 'language' no modelo de usuário)
+        activate(self.language)
+        subject = _('Vérifiez votre adresse e-mail')
+        message = _(
+            'Bonjour,\n\n'
+            'Merci de vous être inscrit sur notre site. '
+            'Pour compléter votre inscription, veuillez cliquer sur le lien suivant :\n\n'
+            '{verification_link}\n\n'
+            'Si vous n\'avez pas demandé cette inscription, vous pouvez ignorer cet e-mail.\n\n'
+            'Cordialement,\n'
+            'L\'équipe BATIMARTPRO'
+        ).format(verification_link=verification_link)
+        
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [self.email]
+
+        send_mail(subject, message, from_email, recipient_list)
+        
+    def verify_email(self, token):
+        if self.email_verification_token == token:
+            self.is_verified = True
+            self.email_verification_token = None
+            self.save()
+            return True
+        return False
+
+    def generate_username(self):
+        if self.email:
+            get_email = self.email.split('@')[0]
+            return re.sub(r"[^a-zA-Z0-9]", "_", get_email)
+        return None
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Se é um novo usuário
+            if not self.username:
+                self.username = self.generate_username()
+            
+            # Verifica se o username gerado já existe
+            if User.objects.filter(username=self.username).exists():
+                base_username = self.username
+                counter = 1
+                while User.objects.filter(username=self.username).exists():
+                    self.username = f"{base_username}_{counter}"
+                    counter += 1
+
+        # Verifica o tipo de usuário e campos obrigatórios
+        if self.user_type == self.UserTypeChoices.COMPANY:
+            if not hasattr(self, 'company_name') or not self.company_name:
+                raise ValidationError(_('Le nom de l\'entreprise est requis pour les comptes d\'entreprise.'))
+        elif self.user_type == self.UserTypeChoices.INDIVIDUAL:
+            if not self.first_name or not self.last_name:
+                raise ValidationError(_('Le prénom et le nom sont requis pour les comptes individuels.'))
+
+        # Normaliza o email
+        self.email = self.email.lower().strip()
+
+        # Verifica se o email já existe
+        if not self.pk and User.objects.filter(email=self.email).exists():
+            raise ValidationError(_('Un utilisateur avec cet email existe déjà.'))
+
+        super(User, self).save(*args, **kwargs)
     # Documentação
     cpf = models.CharField(
         max_length=14, 
@@ -55,10 +209,10 @@ class User(AbstractUser):
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
-        ordering = ['-date_joined']
+        ordering = ['-created_at']
 
-    def __str__(self):
-        return self.get_full_name() or self.email
+    def get_full_name(self):
+        return f'{self.first_name} {self.last_name}' or self.email
 
     def get_absolute_url(self):
         return reverse('accounts:user-detail', kwargs={'pk': self.pk})

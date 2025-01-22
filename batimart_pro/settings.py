@@ -239,11 +239,14 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 TIME_ZONE = 'Europe/Paris'
-LANGUAGES = (
-    ('fr', _('Français')),
+LANGUAGE = [
+    ('fr', _('French')),
     ('en', _('English')),
-    ('pt', _('Português')),
-)
+    ('pt-br', _('Brazilian Portuguese')),
+    ('pt', _('Portuguese')),
+        
+        # Adicione outros idiomas conforme necessário
+    ]
 LOCALE_PATHS = [
     os.path.join(BASE_DIR,  'locale'),
 ]

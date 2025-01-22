@@ -4,6 +4,24 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm, Password
 from django.utils.translation import gettext_lazy as _
 from .models import User
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'country', 'cpf']  # adicione outros campos conforme necessário
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cpf'].required = False  # Torna o campo não obrigatório por padrão
+
+    def clean(self):
+        cleaned_data = super().clean()
+        country = cleaned_data.get('country')
+        cpf = cleaned_data.get('cpf')
+
+        if country == 'BR' and not cpf:
+            self.add_error('cpf', _('CPF is required for Brazilian users.'))
+
+        return cleaned_data
 class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
