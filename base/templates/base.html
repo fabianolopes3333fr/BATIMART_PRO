@@ -9,6 +9,7 @@
 <body>
     {% include 'partials/navbar.html' %}
     {% include 'partials/session_expired_modal.html' %}
+    
 
     <main id="main-content" class="container mt-4">
         {% block content %}
@@ -20,6 +21,8 @@
     <!-- JS bootstrap, jquery, script-->
 
     {% include 'partials/scripts_footer.html' %}
+    {% block extra_js %}
+    {% endblock %}
 </body>
 
 </html>

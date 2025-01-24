@@ -16,6 +16,12 @@ urlpatterns += i18n_patterns(
     path(_('admin/'), admin.site.urls),
     path('', include('accounts.urls')),
     path(_('configuration/'), include('config.urls', namespace='config')),
+    path('clients/', include('client_profiles.urls')),
+    path('company-staff/', include('company_staff.urls')),
+    path('internal-staff/', include('internal_staff.urls')),
+
+
+
     path(_('profil/'), include('profiles.urls', namespace='profiles')),
     prefix_default_language=True
 )

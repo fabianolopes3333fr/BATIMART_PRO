@@ -67,6 +67,9 @@ INSTALLED_APPS = [
     'dashboard',
     'config',
     'perfil',
+    'client_profiles',
+    'company_staff',
+    'internal_staff',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"

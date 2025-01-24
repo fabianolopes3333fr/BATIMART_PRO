@@ -1,17 +1,69 @@
 # accounts/forms.py
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 from .models import User
+import random # escolha aleatoria
+import string # contem todas as letras do alfabeto, etc.
+from django.core.mail import send_mail
+import re
 
 class UserForm(forms.ModelForm):
+    
+    password_1 = forms.CharField(label="Mot de passe", widget=forms.PasswordInput) 
+    password_2 = forms.CharField(label="Confirmation du mot de passe", widget=forms.PasswordInput)
+    
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'country', 'cpf']  # adicione outros campos conforme necessário
-
+        fields = ['language', 'country', 'email','first_name', 'last_name',   'cpf', 'password_1', 'password_2']  
+        labels = {
+            'language': 'Langue', 
+            'country': 'Pays',  # tradução para o campo 'Pays'
+            'email': 'E-mail', 
+            'first_name': 'Prénom', 
+            'last_name': 'Nom', 
+            'is_active': 'Utilisateur actif?',
+            'cpf': 'CPF',
+            
+        }
+        
+        
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['cpf'].required = False  # Torna o campo não obrigatório por padrão
+        self.user = kwargs.pop('user', None)
+        super(UserForm, self).__init__(*args, **kwargs)
+        
+        self.fields['cpf'].required = False
+        
+        if self.user and self.user.is_authenticated:
+            if 'password_1' in self.fields:
+                del self.fields['password_1']
+            if 'password_2' in self.fields:
+                del self.fields['password_2']
+        
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, (forms.CheckboxInput, forms.RadioSelect)):
+                field.widget.attrs['class'] = 'form-check-input'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+                
+                
+    def clean_password_1(self):
+        password_1 = self.cleaned_data.get('password_1')
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])(?=.{8,})', password_1):
+            raise forms.ValidationError(
+                "Le mot de passe doit contenir au moins 8 caractères, "
+                "une majuscule, une minuscule et un caractère spécial."
+            )
+        return password_1
+    
+    def clean_password_2(self):
+        password_1 = self.cleaned_data.get("password_1")
+        password_2 = self.cleaned_data.get("password_2")
+        if password_1 and password_2 and password_1 != password_2:
+            raise ValidationError(_("Les mots de passe ne sont pas les mêmes!"))
+        return password_2
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -22,6 +74,41 @@ class UserForm(forms.ModelForm):
             self.add_error('cpf', _('CPF is required for Brazilian users.'))
 
         return cleaned_data
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password_1"])
+        if commit:
+            user.save()
+        return user
+    
+class UserChangeForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['language', 'country', 'email','first_name', 'last_name',   'cpf', 'is_active']
+        help_texts = {'cpf': _('CPF is required for Brazilian users.'), 'username': None}
+        labels = {
+            'language': 'Langue', 
+            'country': 'Pays',  # tradução para o campo 'Pays'
+            'email': 'E-mail', 
+            'first_name': 'Prénom',
+            'last_name': 'Nom', 
+            'is_active': 'Utilisateur actif?',
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user and not self.user.groups.filter(name__in=['administrador', 'colaborador']).exists():
+            if 'is_active' in self.fields:
+                del self.fields['is_active']
+        
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, (forms.CheckboxInput, forms.RadioSelect)):
+                field.widget.attrs['class'] = 'form-check-input'
+            else:
+                field.widget.attrs['class'] = 'form-control'
 class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
@@ -51,7 +138,7 @@ class UserRegistrationForm(UserCreationForm):
             raise forms.ValidationError(_('Cet email est déjà utilisé.'))
         return email
 
-class UserProfileUpdateForm(UserChangeForm):
+class UserProfileUpdateForm(UserCreationForm):
     password = None  # Remove o campo de senha
 
     class Meta:

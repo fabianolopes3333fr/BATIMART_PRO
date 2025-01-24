@@ -1,0 +1,54 @@
+<form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div>
+        {{ form.first_name.label_tag }}
+        {{ form.first_name }}
+        {{ form.first_name.errors }}
+    </div>
+
+    <div>
+        {{ form.last_name.label_tag }}
+        {{ form.last_name }}
+        {{ form.last_name.errors }}
+    </div>
+
+    <div>
+        {{ form.email.label_tag }}
+        {{ form.email }}
+        {{ form.email.errors }}
+    </div>
+
+    <div>
+        {{ form.country.label_tag }}
+        {{ form.country }}
+        {{ form.country.errors }}
+    </div>
+
+    <div id="cpf-field" style="display: none;">
+        {{ form.cpf.label_tag }}
+        {{ form.cpf }}
+        {{ form.cpf.errors }}
+    </div>
+
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var countryField = document.getElementById('{{ form.country.id_for_label }}');
+        var cpfField = document.getElementById('cpf-field');
+
+        function toggleCPFField() {
+            if (countryField.value === 'BR') {
+                cpfField.style.display = 'block';
+            } else {
+                cpfField.style.display = 'none';
+            }
+        }
+
+        countryField.addEventListener('change', toggleCPFField);
+        toggleCPFField();  // Call once to set initial state
+    });
+</script>

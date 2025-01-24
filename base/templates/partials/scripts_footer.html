@@ -6,10 +6,26 @@
 <script src="{% static 'js/script.js' %}"></script>
 
 {% if session_expired %}
-{% include 'partials/session_expired_modal.html' %}
+
 <script>
     $(document).ready(function () {
         $('#sessionExpiredModal').modal('show');
     });
 </script>
 {% endif %}
+{% block extra_js %}
+<script>
+    function checkActivity() {
+        fetch('{% url "check_activity" %}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'logout') {
+                    window.location.href = '{% url "login" %}?session_expired=true';
+                }
+            });
+    }
+
+    // Verifique a atividade a cada minuto
+    setInterval(checkActivity, 60000);
+</script>
+{% endblock %}

@@ -6,23 +6,35 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
+from django_countries.fields import CountryField
 from django.utils.translation import activate, gettext_lazy as _
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import BaseUserManager, PermissionsMixin, AbstractBaseUser
 
+from accounts.services import send_verification_email
+
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password, **extra_fields):
+    def create_user(self, email, password=None, **extra_fields):
         if not email:
-            raise ValueError(_('Le-mail doit être fourni.'))
+            raise ValueError(_('L\'adresse e-mail est obligatoire'))
         email = self.normalize_email(email)
+        if not email:
+            raise ValueError(_('L\'adresse e-mail fournie n\'est pas valide'))
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
     
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(_('Superuser must have is_superuser=True.'))
+
         return self.create_user(email, password, **extra_fields)
     
 
@@ -30,11 +42,12 @@ class MyUserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     # Campos de autenticação extras
     username = models.CharField(max_length=100, unique=True, null=True)
-    email = models.EmailField(_('email'), max_length=225, unique=True)
+    email = models.EmailField(_('email address'), max_length=225, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     company_name = models.CharField(
         _('Nom de l\'entreprise'), max_length=255, blank=True, null=True)
+    country = CountryField(blank_label='(select country)', null=True, blank=True)
     # ... resto do modelo ...
     is_verified = models.BooleanField(default=False)
     email_verification_token = models.CharField(max_length=100, blank=True, null=True)
@@ -80,7 +93,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['username']
     
     objects = MyUserManager()
     
@@ -97,28 +110,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     
     def send_verification_email(self):
-        if not self.email_verification_token:
-            self.email_verification_token = str(uuid.uuid4())
-            
-        verification_link = f"{settings.SITE_URL}/verify-email/{self.email_verification_token}/"
-        
-        # Ativa o idioma do usuário (supondo que você tenha um campo 'language' no modelo de usuário)
-        activate(self.language)
-        subject = _('Vérifiez votre adresse e-mail')
-        message = _(
-            'Bonjour,\n\n'
-            'Merci de vous être inscrit sur notre site. '
-            'Pour compléter votre inscription, veuillez cliquer sur le lien suivant :\n\n'
-            '{verification_link}\n\n'
-            'Si vous n\'avez pas demandé cette inscription, vous pouvez ignorer cet e-mail.\n\n'
-            'Cordialement,\n'
-            'L\'équipe BATIMARTPRO'
-        ).format(verification_link=verification_link)
-        
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [self.email]
-
-        send_mail(subject, message, from_email, recipient_list)
+        send_verification_email(self)
         
     def verify_email(self, token):
         if self.email_verification_token == token:

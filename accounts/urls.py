@@ -3,10 +3,20 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.utils.translation import gettext_lazy as _
 from . import views
+from .views import CustomLoginView
 
 app_name = 'accounts'
 
 urlpatterns = [
+    path("", include("django.contrib.auth.urls")),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('profile/', UserDetailView.as_view(), name='profile'),
+    path('profile/update/', ProfileUpdateView.as_view(), name='profile_update'),
+    path('change-password/', change_password, name='change_password'),
+    path('verify-email/<str:token>/', verify_email, name='verify_email'),
+    path('users/', AdminUserListView.as_view(), name='user_list'),
+
     # Autenticação
     path(_('connexion/'), auth_views.LoginView.as_view(template_name='accounts/login.html',redirect_authenticated_user=True), name='login'),
     path(_('deconnexion/'), auth_views.LogoutView.as_view(next_page='accounts:login'), name='logout'),
